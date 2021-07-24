@@ -11,7 +11,9 @@
         inherit system;
         overlays = [ emacs-overlay.overlay ];
       };
+      myConfigPkg = import ./buildConfig.nix { trivialBuild = pkgs.emacsPackages.trivialBuild; };
       emacs = pkgs.emacsPgtkGcc.pkgs.withPackages (epkgs: (with epkgs.melpaStablePackages; [
+        myConfigPkg
         company
         paredit
         emmet-mode
