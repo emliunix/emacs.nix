@@ -1,17 +1,19 @@
 {
   description = "My Emacs Nix flake setup";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/21.11-pre";
+    nixpkgs.url = "github:NixOS/nixpkgs/21.05";
+    nix-mode.url = "github:NixOS/nix-mode";
     flake-utils.url = "github:numtide/flake-utils";
     emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
-  outputs = { self, nixpkgs, flake-utils, emacs-overlay }: flake-utils.lib.eachDefaultSystem (system:
+  outputs = { self, nixpkgs, nix-mode, flake-utils, emacs-overlay }: flake-utils.lib.eachDefaultSystem (system:
     let
       pkgs = import nixpkgs {
         inherit system;
         overlays = [ emacs-overlay.overlay ];
       };
       myConfigPkg = import ./buildConfig.nix { trivialBuild = pkgs.emacsPackages.trivialBuild; };
+      my-nix-mode = nix-mode.defaultPackage.${system};
       emacs = pkgs.emacsPgtkGcc.pkgs.withPackages (epkgs: (with epkgs.melpaStablePackages; [
         myConfigPkg
         company
@@ -25,7 +27,7 @@
         rust-mode
         yaml-mode
         syntax-subword
-        nix-mode
+        my-nix-mode
         nixpkgs-fmt
         helm
         yasnippet
