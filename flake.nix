@@ -12,9 +12,10 @@
         inherit system;
         overlays = [ emacs-overlay.overlay ];
       };
-      myConfigPkg = import ./buildConfig.nix { trivialBuild = pkgs.emacsPackages.trivialBuild; };
+      emacsPkgs = pkgs.emacsPgtkGcc.pkgs;
+      myConfigPkg = import ./buildConfig.nix { trivialBuild = emacsPkgs.trivialBuild; };
       my-nix-mode = nix-mode.defaultPackage.${system};
-      emacs = pkgs.emacsPgtkGcc.pkgs.withPackages (epkgs: (with epkgs.melpaStablePackages; [
+      emacs = emacsPkgs.withPackages (epkgs: (with epkgs.melpaStablePackages; [
         myConfigPkg
         company
         paredit
